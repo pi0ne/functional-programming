@@ -1,6 +1,7 @@
 object MyModule{
   
   // 純粋関数
+  // 絶対値を返す
   def abs(n: Int): Int =
     if(n < 0) -n
     else n
@@ -36,20 +37,31 @@ object MyModule{
     loop(0)
   }
   
+  // 部分適用 (partial application)
+  // (b: B) はB型のbを受け取る関数を表す
+  // この関数全体の戻り値は、Bを受け取りCを返す関数となる
+  // この関数内では、関数の引数として受け取ったa:Aを、f:(A,B)に適用しているので、戻り値の関数にBを適用すればCが得られる
+  // f:(A,B)=>Cという関数のうち、引数尾一部であるAの値だけを適用し返すため部分関数と呼ばれる
+  def partial1[A, B, C](a: A, f: (A, B) => C): B => C =
+    (b: B) => f(a, b)
+  
   // 純粋関数
   // 複数ステートメントのため中括弧が必要. ステートメントは改行もしくはセミコロンで区切られる
   private def formatAbs(x: Int) = {
-    val msg = "The absolute value of %d is %d"
+    val msg = "The absolute value of %d is %d."
     msg.format(x, abs(x))
   }
   
   private def formatFactorial(n: Int) = {
     val msg = "The factorial of %d is %d."
+    msg.format(n, factorial(n))
   }
   
   def main(args: Array[String]): Unit = {
-    println(formatAbs(-42))
-    println(formatFactorial(7))
+    println(formatAbs(-42))                                 // The absolute value of -42 is 42.
+    println(formatFactorial(7))                             // The factorial of 7 is 5040.
+    // Arrayは配列リテラル, (x: Int) => x == 9 は関数リテラル(無名関数)
+    println(findFirst(Array(7, 9, 13), (x: Int) => x == 9)) // 1
   }
   
 }
