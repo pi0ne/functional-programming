@@ -13,6 +13,27 @@ object MyModule{
     def go(n: Int, acc: Int): Int = 
       if(n <= 0) acc
       else go(n-1, n*acc)             // 末尾再帰
+      
+    go(n ,1)
+  }
+  
+  // 高階関数. 引数に関数の方が存在するため
+  // 下のformatメソッドを一般化するために、この関数内で関数の結果を取得している
+  def formatResult(name: String, n: Int, f: Int => Int) = {
+    val msg = "The %s of %d is %d."
+    msg.format(name, n, f(n))
+  }
+  
+  // 多相関数 (polymorphic function)
+  // 配列内の要素を検索し、最初の添え字を返却する
+  // 検索の判定をpとして渡す
+  def findFirst[A](as: Array[A], p: A => Boolean): Int = {
+    def loop(n: Int): Int =
+      if(n >= as.length) -1
+      else if(p(as(n))) n
+      else loop(n+1)
+      
+    loop(0)
   }
   
   // 純粋関数
@@ -26,7 +47,9 @@ object MyModule{
     val msg = "The factorial of %d is %d."
   }
   
-  def main(args: Array[String]): Unit =
+  def main(args: Array[String]): Unit = {
     println(formatAbs(-42))
     println(formatFactorial(7))
+  }
+  
 }
