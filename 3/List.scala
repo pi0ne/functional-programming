@@ -1,7 +1,13 @@
+// 単純化したList型
+
 // [+A]について
 // +は変位アノテーションで、AがListの共変パラメータであることを意味する
 // 一般的にXがYの部分型であるならば、List[X]もList[Y]の部分方であると扱うということ
 // より具体的には、DogがAnimalの部分方なら、List[Dog]はList[Animal]の部分型であり、List[Animal]型の変数にList[Dog]型のインスタンスを格納可能であることを意味する
+
+// Listは代数的データ型である
+// 代数的データ型とは1つ以上のデータコンストラクタによって定義されるデータ型であり、コンストラクタは0個以上の引数を受け取る
+// 代数的データ型は、それを使って他のデータ構造の定義を行うことができる. 例としてListを使って二分木を実装できるのがそれである
 
 sealed trait List[+A]                                         // A型のListデータ型. これは単方向リストになる
 case object Nil extends List[Nothing]                         // 空のリストを表すデータコンストラクタ
@@ -45,6 +51,21 @@ object List{
       case Cons(h, t) if f(h) => dropWhile(t)(f)
       case _ => as
     }
+  
+  // sumとproductを一般化した関数
+  // asに計算対象のList, zにasがNilだった場合に返す値, fに演算の内容を渡す
+  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => z // zはasがNilの場合に返す値. 加算の場合は0, 掛け算の場合は1を返す
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+  
+  def sum2(ns: List[Int]) =
+    foldRight(ns, 0)((x, y) => x + y)
+  
+  def product2(ns: List[Double]) =
+    foldRight(ns, 1.0)(_ * _) // (x, y) => x * y はこのように簡易表記することが可能. 無名関数のアンダースコア(FP in Scala p50参照)
+  
 }
 
 object ListTest{
@@ -52,5 +73,12 @@ object ListTest{
     val xs: List[Int] = List(1, 2, 3, 4, 5)
     val ex1 = List.dropWhile(xs)(x => x < 4)
     println(ex1)    // Cons(4,Cons(5,Nil))
+    
+    val ex2 = List.sum2(xs)
+    println(ex2)
+    
+    val ys: List[Double] = List(1.0, 2.0, 3.0)
+    val ex3 = List.product2(ys)
+    println(ex3)
   }
 }
