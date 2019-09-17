@@ -1,5 +1,3 @@
-package fpinscala.datastructures
-
 // [+A]について
 // +は変位アノテーションで、AがListの共変パラメータであることを意味する
 // 一般的にXがYの部分型であるならば、List[X]もList[Y]の部分方であると扱うということ
@@ -19,6 +17,7 @@ object List{
   }
   
   // 掛け算
+  // 変数パターン_は任意の式とマッチする. 変数パターンはxなどでも良いが、ケースの結果において値を無視する場合は_を使用する
   def product(ds: List[Double]): Double = ds match{
     case Nil => 1.0
     case Cons(0.0, _) => 0.0
@@ -29,10 +28,5 @@ object List{
   def apply[A](as: A*): List[A] =
     if(as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
-  
-  // def main(args: Array[String]):Unit ={
-  //   val ex1: List[Double] = Nil
-  //   val ex2: List[Int] = Cons(1, Nil)
-  //   val ex3: List[String] = Cons("a", Cons("b", Nil))
-  // }
+
 }
