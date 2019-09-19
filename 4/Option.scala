@@ -43,7 +43,7 @@ trait Insurance{
   // 年齢、速度違反番号から保険料を計算する式. フォームでバリエーションされていない前提だと、2つの引数には文字列が入る恐れがある
   def insuranceRateQuote(age: Int, numberOfSpeedingTickets: Int): Double
   
-  // 入力値をパースする
+  // 入力値をパースし、成功した場合にinsuranceRateQuoteへ値を渡す
   def parseInsuranceRateQuote(
     age: String,
     numberOfSpeedingTickets: String
