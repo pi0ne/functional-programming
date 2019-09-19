@@ -27,6 +27,14 @@ object Option {
   // Option型の2つの値を結合する総称関数
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     a flatMap(aa => b map (bb => f(aa, bb)))  // aはNoneでない場合にf(aa,bb)を返すが、この中でbの評価を行っており、aはaとは別の値によって失敗する可能性がある
+  
+  // map2をfor内包記法(for-comprehension)で書き直すと以下の様になる
+  // この呼び出しは、flatMapとmapの呼び出しとして自動的に展開される
+  def _map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    for{
+      aa <- a
+      bb <- b
+    } yield f(aa, bb)
 }
 
 // 保険料計算をするクラス
