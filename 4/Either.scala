@@ -1,4 +1,10 @@
-sealed trait Either[+E, +A]
+// TODO: impliment
+sealed trait Either[+E, +A]{
+  def map[B](f: A => B): Either[E, B]
+  def flatMap[EE >: E, B](f: A => Either[EE, B]): Either[EE, B]
+  def orElse[EE >: E, B >: A](b: => Either[EE, B]): Either[EE, B]
+  def map[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C]
+}
 case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
 
@@ -11,12 +17,12 @@ object Either{
       Right(xs.sum / xs.length)
       
   // 詳細なエラー情報が欲しい場合は、NoneではなくEitherで例外を返すことができる
-  def safeDiv(x: Int, y: Int) =
+  def safeDiv(x: Int, y: Int): Either[Exception, Int] =
     try Right(x / y)
     catch{ case e: Exception => Left(e) }
   
   // Optionでの値の変換も、Eitherにより実装可能
-  def Try[A](a: => A): Either[Either, A] =
+  def Try[A](a: => A): Either[Exception, A] =
     try Right(a)
     catch{ case e: Exception => Left(e) }
 }
@@ -32,7 +38,7 @@ trait Insurance{
     age: String,
     numberOfSpeedingTickets: String): Either[Exception, Double] =
     for{
-      a <- Try{ age.toInt }
-      tickets <- Try{ numberOfSpeedingTickets.toInt }
+      a <- Either.Try{ age.toInt }
+      tickets <- Either.Try{ numberOfSpeedingTickets.toInt }
     } yield insuranceRateQuote(a, tickets)
 }
